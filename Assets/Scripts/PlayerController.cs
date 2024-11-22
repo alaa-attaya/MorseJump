@@ -10,9 +10,11 @@ public class Player : MonoBehaviour
 
     public float jumpForce = 10f;
     public float gravity = 50f;
-    public float jumpTime = 0.2f; // Maximum duration for holding the jump
+    public float jumpTime = 0.3f; // Maximum duration for holding the jump
     private float jumpTimeCounter;
     private bool isJumping;
+
+    private bool isTouching; // To track touch input
 
     private void Awake()
     {
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour
         direction = Vector3.zero;
         isJumping = false;
         jumpTimeCounter = 0f;
+        isTouching = false;
     }
 
     private void Update()
@@ -31,11 +34,16 @@ public class Player : MonoBehaviour
         // Apply gravity
         direction += gravity * Time.deltaTime * Vector3.down;
 
+        // Detect input: Key on desktop, touch on mobile
+        bool inputDown = Input.GetKeyDown(KeyCode.Space) || IsTouchDown();
+        bool inputHold = Input.GetKey(KeyCode.Space) || IsTouchHeld();
+        bool inputUp = Input.GetKeyUp(KeyCode.Space) || IsTouchUp();
+
         if (character.isGrounded) // Check if the player is grounded
         {
             direction = Vector3.down; // Reset downward velocity when grounded
 
-            if (Input.GetKeyDown(KeyCode.Space)) // Start jumping
+            if (inputDown) // Start jumping
             {
                 isJumping = true;
                 jumpTimeCounter = jumpTime;
@@ -44,7 +52,7 @@ public class Player : MonoBehaviour
         }
 
         // Handle jump hold
-        if (Input.GetKey(KeyCode.Space) && isJumping)
+        if (inputHold && isJumping)
         {
             if (jumpTimeCounter > 0)
             {
@@ -58,7 +66,7 @@ public class Player : MonoBehaviour
         }
 
         // Stop jumping when the button is released
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (inputUp)
         {
             isJumping = false;
         }
@@ -67,11 +75,46 @@ public class Player : MonoBehaviour
         character.Move(direction * Time.deltaTime);
     }
 
-    // Uncomment and implement the trigger logic for game over if necessary:
-    // private void OnTriggerEnter(Collider other)
-    // {
-    //     if (other.CompareTag("Obstacle")) {
-    //         GameManager.Instance.GameOver();
-    //     }
-    // }
+    // Helper methods for touch detection
+    private bool IsTouchDown()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Began)
+            {
+                isTouching = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsTouchHeld()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+            {
+                isTouching = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsTouchUp()
+    {
+        if (isTouching && Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+            if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled)
+            {
+                isTouching = false;
+                return true;
+            }
+        }
+        return false;
+    }
 }
