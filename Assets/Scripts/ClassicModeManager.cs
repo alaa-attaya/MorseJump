@@ -2,16 +2,36 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+[DefaultExecutionOrder(-1)]
 public class ClassicModeManager : MonoBehaviour
-{
+{   public static ClassicModeManager Instance { get; private set; }
+
+    public float initialGameSpeed = 5f;
+    public float gameSpeedIncrease = 0.1f;
+    public float gameSpeed { get; private set; }
+    public float gameSpeedMax = 12f;
     public GameObject menuPanel;   // Reference to the Menu Panel
     public Button yesButton;       // Reference to the "Yes" button
     public Button noButton;        // Reference to the "No" button
     public Button closeButton;     // Reference to the "Close" button
+        private void Awake()
+    {
+        if (Instance != null) {
+            DestroyImmediate(gameObject);
+        } else {
+            Instance = this;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) {
+            Instance = null;
+        }
+    }
 
     void Start()
-    {
+    {   
         // Ensure the menu panel is initially inactive
         menuPanel.SetActive(false);
 
@@ -19,10 +39,21 @@ public class ClassicModeManager : MonoBehaviour
         yesButton.onClick.AddListener(GoToMenu);
         noButton.onClick.AddListener(ClosePanel);
         closeButton.onClick.AddListener(ClosePanel);
+         NewGame();
+    }
+      public void NewGame()
+    {
+       
+
+     
+        gameSpeed = initialGameSpeed;
+       
+
+     
     }
 
     void Update()
-    {
+    {      gameSpeed = Mathf.Min(gameSpeed + gameSpeedIncrease * Time.deltaTime, gameSpeedMax);
         // Listen for Escape key (Windows) or Back button (Android)
         if (Input.GetKeyDown(KeyCode.Escape))
         {
