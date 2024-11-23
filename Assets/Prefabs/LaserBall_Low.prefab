@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 1706720079099546010}
   - component: {fileID: 7588399544037434981}
   - component: {fileID: 5202686393850641072}
+  - component: {fileID: -6821372392303133166}
   m_Layer: 0
-  m_Name: LaserBall
+  m_Name: LaserBall_Low
   m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 6256101477957194610}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.2, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -121,4 +122,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sprites:
   - {fileID: 21300000, guid: fc26063d7ee5eeb47b8fe39e043363c9, type: 3}
-  - {fileID: 21300000, guid: eaa8d8f09c6e1d141b47ee8ca3b27c7e, type: 3}
+  - {fileID: 21300000, guid: e574c1755168ba74396cb8d258aea354, type: 3}
+--- !u!114 &-6821372392303133166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6256101477957194610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271d07267d206e142a320b0010a98138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -9,7 +9,7 @@ public class ClassicModeManager : MonoBehaviour
     public float initialGameSpeed = 5f;
     public float gameSpeedIncrease = 0.1f;
     public float gameSpeed { get; private set; }
-    public float gameSpeedMax = 12f;
+    public float gameSpeedMax = 20f;
     public GameObject menuPanel;   // Reference to the Menu Panel
     public Button yesButton;       // Reference to the "Yes" button
     public Button noButton;        // Reference to the "No" button
