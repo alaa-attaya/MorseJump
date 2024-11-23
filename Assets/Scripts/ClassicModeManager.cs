@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ public class ClassicModeManager : MonoBehaviour
     public float gameSpeedIncrease = 0.1f;
     public float gameSpeed { get; private set; }
     public float gameSpeedMax = 20f;
+    private PlayerController player;
+    private SpawnerManager spawner;
     public GameObject menuPanel;   // Reference to the Menu Panel
     public Button yesButton;       // Reference to the "Yes" button
     public Button noButton;        // Reference to the "No" button
@@ -34,7 +37,8 @@ public class ClassicModeManager : MonoBehaviour
     {   
         // Ensure the menu panel is initially inactive
         menuPanel.SetActive(false);
-
+        player = FindObjectOfType<PlayerController>();
+        spawner = FindObjectOfType<SpawnerManager>();
         // Assign button listeners
         yesButton.onClick.AddListener(GoToMenu);
         noButton.onClick.AddListener(ClosePanel);
@@ -44,13 +48,34 @@ public class ClassicModeManager : MonoBehaviour
       public void NewGame()
     {
        
+      ObstacleManager[] obstacles = FindObjectsOfType<ObstacleManager>();
 
-     
+        foreach (var obstacle in obstacles) {
+            Destroy(obstacle.gameObject);
+        }
+
+      
         gameSpeed = initialGameSpeed;
-       
+        enabled = true;
 
+        player.gameObject.SetActive(true);
+        spawner.gameObject.SetActive(true);
      
     }
+
+    
+     public void GameOver()
+    {
+        gameSpeed = 0f;
+        enabled = false;
+        
+        player.gameObject.SetActive(false);
+        spawner.gameObject.SetActive(false);
+  
+
+       
+    }
+
 
     void Update()
     {      gameSpeed = Mathf.Min(gameSpeed + gameSpeedIncrease * Time.deltaTime, gameSpeedMax);

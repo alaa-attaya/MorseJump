@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class Player : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     private CharacterController character;
     private Vector3 direction;
@@ -116,5 +116,11 @@ public class Player : MonoBehaviour
             }
         }
         return false;
+    }
+        private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle")) {
+            ClassicModeManager.Instance.GameOver();
+        }
     }
 }

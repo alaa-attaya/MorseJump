@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI; // Import for UI Text components
+using TMPro;
 public class SpawnerManager : MonoBehaviour
 {
     [System.Serializable]
@@ -19,6 +20,9 @@ public class SpawnerManager : MonoBehaviour
     public float maxSpawnRate = 2f;      // Maximum spawn rate for the next obstacle
     public float morseCodeSpeed = 0.5f;  // Time between obstacles in the sequence
 
+    public TextMeshProUGUI morseCodeDisplay; // UI Text for displaying Morse code
+    public TextMeshProUGUI scoreDisplay; // UI Text for displaying Score
+
     // Morse code for 0-9
     private static readonly string[] morseCodeNumbers = new string[]
     {
@@ -35,7 +39,6 @@ public class SpawnerManager : MonoBehaviour
     };
 
     private int currentNumber = 0;  // The current number whose Morse code we're using
-    private bool isSpawning = false; // Flag to track if we are in the middle of spawning
 
     private void OnEnable()
     {
@@ -54,6 +57,9 @@ public class SpawnerManager : MonoBehaviour
             // Convert the current number to Morse code
             string morseCode = NumberToMorseCode(currentNumber);
 
+            // Update the display with the current number and Morse code
+            UpdateDisplay(currentNumber, morseCode);
+
             // Spawn obstacles based on the Morse code sequence
             foreach (char symbol in morseCode)
             {
@@ -63,10 +69,10 @@ public class SpawnerManager : MonoBehaviour
                 yield return new WaitForSeconds(morseCodeSpeed);
             }
 
-            // Increment the number (it will now continue to 10, 11, 12, etc.)
+            // Increment the number
             currentNumber++;
 
-            // After each Morse code sequence, wait for a random spawn rate before starting again
+            // Wait for a random time between sequences
             yield return new WaitForSeconds(Random.Range(minSpawnRate, maxSpawnRate));
         }
     }
@@ -76,7 +82,6 @@ public class SpawnerManager : MonoBehaviour
         string morseCode = "";
 
         // Convert the number to Morse code by breaking it into digits
-        // Convert each digit to its Morse code equivalent
         foreach (char digit in number.ToString())
         {
             int digitInt = digit - '0'; // Convert char to int
@@ -92,41 +97,48 @@ public class SpawnerManager : MonoBehaviour
 
         if (morseSymbol == '.')
         {
-            // If the symbol is a dot, pick a prefab from the dotPrefabs array based on spawn chance
+            // Pick a prefab from the dotPrefabs array
             obstaclePrefab = GetRandomPrefabWithChance(dotPrefabs);
         }
         else if (morseSymbol == '-')
         {
-            // If the symbol is a dash, pick a prefab from the dashPrefabs array based on spawn chance
+            // Pick a prefab from the dashPrefabs array
             obstaclePrefab = GetRandomPrefabWithChance(dashPrefabs);
         }
 
-        // Instantiate the obstacle at the current position if a prefab is selected
+        // Instantiate the obstacle at the current position
         if (obstaclePrefab != null)
         {
             GameObject obstacle = Instantiate(obstaclePrefab);
-            obstacle.transform.position += transform.position; // Adjust spawn position based on the manager's position
+            obstacle.transform.position += transform.position; // Adjust spawn position
         }
     }
 
     private GameObject GetRandomPrefabWithChance(SpawnableObject[] prefabs)
     {
-        // Randomly select a prefab based on the spawn chance
         float randomValue = Random.value; // Get a random value between 0 and 1
         float cumulativeChance = 0f;
 
-        // Loop through the prefabs and compare the random value with the spawn chances
         foreach (var spawnable in prefabs)
         {
             cumulativeChance += spawnable.spawnChance;
             if (randomValue <= cumulativeChance)
             {
-                // If the random value is less than or equal to the cumulative chance, spawn this prefab
                 return spawnable.prefab;
             }
         }
 
-        // If no prefab is selected (could happen if spawnChance values don't sum to 1), return null or fallback prefab
-        return null;
+        return null; // If no prefab is selected
+    }
+
+    private void UpdateDisplay(int number, string morseCode)
+    {
+        if (morseCodeDisplay != null)
+        {
+            // Update the UI text with the Score and Morse code
+            scoreDisplay.text =  $"SCORE\n{number}";
+            morseCodeDisplay.text = $"MORSE CODE\n{morseCode}";
+         
+        }
     }
 }
