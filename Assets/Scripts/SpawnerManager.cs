@@ -41,6 +41,7 @@ public class SpawnerManager : MonoBehaviour
     };
 
     private int currentNumber = 0;  // The current number whose Morse code we're using
+    private int currentScore = 0;   // The actual score that gets updated and returned
 
     private void Awake()
     {
@@ -52,7 +53,7 @@ public class SpawnerManager : MonoBehaviour
     }
 
     private void OnEnable()
-    {
+    {   
         StartCoroutine(EndlessSpawning());
     }
 
@@ -153,6 +154,9 @@ public class SpawnerManager : MonoBehaviour
             scoreDisplay.text = $"SCORE\n{number}";
             morseCodeDisplay.text = $"MORSE CODE\n{morseCode}";
 
+            // Update the current score
+            currentScore = number;
+
             // Change both texts' color for 1 morse code speed
             StartCoroutine(ChangeTextColorTemporarily());
         }
@@ -181,5 +185,19 @@ public class SpawnerManager : MonoBehaviour
         {
             audioSource.PlayOneShot(scoreIncrementClip);  // Play the score increment sound immediately
         }
+    }
+
+    // Method to reset the score
+    public void ResetScore()
+    {
+        currentNumber = 0;  // Reset the number (display purpose)
+        currentScore = 0;   // Reset the actual score
+        UpdateDisplay(currentNumber, NumberToMorseCode(currentNumber));  // Update the UI display
+    }
+
+    // Method to get the current score
+    public int GetScore()
+    {
+        return currentScore;  // Return the actual score
     }
 }

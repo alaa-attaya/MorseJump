@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 direction;
 
     public float jumpForce = 10f;
-    public float gravity = 50f;
+    public float gravity = 110f;
     public float jumpTime = 0.3f; // Maximum duration for holding the jump
     private float jumpTimeCounter;
     private bool isJumping;
