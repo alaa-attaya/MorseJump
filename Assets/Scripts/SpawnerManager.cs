@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // Import for UI Text components
-using TMPro;
+using TMPro;  // Import for TextMeshPro
+
 public class SpawnerManager : MonoBehaviour
 {
     [System.Serializable]
@@ -22,9 +21,12 @@ public class SpawnerManager : MonoBehaviour
 
     public TextMeshProUGUI morseCodeDisplay; // UI Text for displaying Morse code
     public TextMeshProUGUI scoreDisplay; // UI Text for displaying Score
+    private AudioSource audioSource; // AudioSource for sounds
+
+    public AudioClip scoreIncrementClip; // Sound for score increment
 
     // Morse code for 0-9
-    private static readonly string[] morseCodeNumbers = new string[]
+    private static readonly string[] morseCodeNumbers = new string[] 
     {
         "-----",  // 0
         ".----",  // 1
@@ -39,6 +41,15 @@ public class SpawnerManager : MonoBehaviour
     };
 
     private int currentNumber = 0;  // The current number whose Morse code we're using
+
+    private void Awake()
+    {
+        // Set up the AudioSource component
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();  // Ensure the AudioSource is assigned
+        }
+    }
 
     private void OnEnable()
     {
@@ -59,6 +70,9 @@ public class SpawnerManager : MonoBehaviour
 
             // Update the display with the current number and Morse code
             UpdateDisplay(currentNumber, morseCode);
+
+            // Play the score increment sound before displaying the score
+            PlayScoreIncrementSound();
 
             // Spawn obstacles based on the Morse code sequence
             foreach (char symbol in morseCode)
@@ -133,12 +147,39 @@ public class SpawnerManager : MonoBehaviour
 
     private void UpdateDisplay(int number, string morseCode)
     {
-        if (morseCodeDisplay != null)
+        if (morseCodeDisplay != null && scoreDisplay != null)
         {
             // Update the UI text with the Score and Morse code
-            scoreDisplay.text =  $"SCORE\n{number}";
+            scoreDisplay.text = $"SCORE\n{number}";
             morseCodeDisplay.text = $"MORSE CODE\n{morseCode}";
-         
+
+            // Change both texts' color for 1 morse code speed
+            StartCoroutine(ChangeTextColorTemporarily());
+        }
+    }
+
+    // Change both score and morse code text color temporarily
+    private IEnumerator ChangeTextColorTemporarily()
+    {
+        // Set the color to #4873F3 (blue)
+        scoreDisplay.color = new Color(243f / 255f, 72f / 255f, 72f / 255f); // Hex: #F34848
+
+        morseCodeDisplay.color = new Color(72f / 255f, 115f / 255f, 243f / 255f); // Hex: #4873F3
+
+        // Wait for the morseCodeSpeed duration
+        yield return new WaitForSeconds(morseCodeSpeed);
+
+        // Reset the color to default (white)
+        scoreDisplay.color = Color.white;
+        morseCodeDisplay.color = Color.white;
+    }
+
+    // Play sound for score increment
+    private void PlayScoreIncrementSound()
+    {
+        if (scoreIncrementClip != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(scoreIncrementClip);  // Play the score increment sound immediately
         }
     }
 }

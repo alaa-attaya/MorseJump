@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(AudioSource))] // Ensure AudioSource is present
 public class PlayerController : MonoBehaviour
 {
     private CharacterController character;
@@ -16,9 +17,23 @@ public class PlayerController : MonoBehaviour
 
     private bool isTouching; // To track touch input
 
+    // Game Over Audio
+    private AudioSource audioSource;
+    public AudioClip gameOverClip;
+    public AudioClip playerJumpClip;  // Jump sound clip
+
     private void Awake()
     {
         character = GetComponent<CharacterController>();
+
+        // Setup AudioSource
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        audioSource.playOnAwake = false; // Ensure it doesn't auto-play
     }
 
     private void OnEnable()
@@ -48,6 +63,14 @@ public class PlayerController : MonoBehaviour
                 isJumping = true;
                 jumpTimeCounter = jumpTime;
                 direction = Vector3.up * jumpForce; // Apply jump force
+
+                // Play jump sound if it's not already playing
+                if (playerJumpClip != null && !audioSource.isPlaying)
+                {
+                    audioSource.clip = playerJumpClip;
+                    audioSource.loop = false;
+                    audioSource.Play(); // Play the jump sound
+                }
             }
         }
 
@@ -73,6 +96,23 @@ public class PlayerController : MonoBehaviour
 
         // Move the player
         character.Move(direction * Time.deltaTime);
+    }
+
+    // Handle collision with obstacles
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle"))
+        {    
+            // Play Game Over sound immediately
+            if (gameOverClip != null)
+            {
+                audioSource.clip = gameOverClip;
+                audioSource.loop = false;
+                audioSource.Play(); // Play immediately
+            }
+
+            ClassicModeManager.Instance.GameOver();
+        }
     }
 
     // Helper methods for touch detection
@@ -116,11 +156,5 @@ public class PlayerController : MonoBehaviour
             }
         }
         return false;
-    }
-        private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Obstacle")) {
-            ClassicModeManager.Instance.GameOver();
-        }
     }
 }
