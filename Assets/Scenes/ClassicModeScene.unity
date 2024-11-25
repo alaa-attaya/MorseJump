@@ -3146,14 +3146,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dotPrefabs:
   - prefab: {fileID: 6256101477957194610, guid: 758ba95dcfdd1304a894142215d1913e, type: 3}
-    spawnChance: 0.5
+    spawnChance: 0.7
   - prefab: {fileID: 6256101477957194610, guid: d2d8f55b20a69cc428272989138fc0ee, type: 3}
-    spawnChance: 0.5
+    spawnChance: 0.3
   dashPrefabs:
   - prefab: {fileID: 1007844988053873997, guid: a14f665107c97be47859529e20e9f457, type: 3}
-    spawnChance: 0.5
-  - prefab: {fileID: 8635723698020702326, guid: d5a4b9834634e31489b9abc4e234e96a, type: 3}
-    spawnChance: 0.5
+    spawnChance: 1
   minSpawnRate: 1
   maxSpawnRate: 2
   morseCodeSpeed: 0.5
