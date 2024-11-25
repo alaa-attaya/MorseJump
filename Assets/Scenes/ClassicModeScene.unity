@@ -251,6 +251,7 @@ MonoBehaviour:
   menuPanel: {fileID: 83423934}
   gameOverPanel: {fileID: 927253891}
   scoreText: {fileID: 1206461800}
+  highScoreText: {fileID: 1265676065}
   yesButton: {fileID: 2066999792}
   noButton: {fileID: 539788304}
   closeButton: {fileID: 1734249361}

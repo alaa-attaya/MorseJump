@@ -76,7 +76,7 @@ public class ClassicModeManager : MonoBehaviour
     }
 
     public void NewGame()
-    {
+    {   
        
         // Destroy existing obstacles
         ObstacleManager[] obstacles = FindObjectsOfType<ObstacleManager>();
@@ -87,8 +87,7 @@ public class ClassicModeManager : MonoBehaviour
         
         player.gameObject.SetActive(true);
         spawner.gameObject.SetActive(true);
-         // Reset the score in SpawnerManager
-        spawner.ResetScore();
+     
     
         // Reset game variables
         gameSpeed = initialGameSpeed;
